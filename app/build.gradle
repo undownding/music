@@ -1,0 +1,86 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+
+    dataBinding.enabled = true
+
+    defaultConfig {
+        applicationId "me.undownding.music"
+        minSdkVersion 15
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    defaultConfig {
+        vectorDrawables.useSupportLibrary = true
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi-v7a'
+        }
+    }
+}
+
+kapt {
+    generateStubs = true
+}
+
+dependencies {
+    testCompile 'junit:junit:4.12'
+
+    // Android Support Library
+    compile "com.android.support:support-v4:$parent.ext.libs.supportVersion"
+    compile "com.android.support:cardview-v7:$parent.ext.libs.supportVersion"
+    compile "com.android.support:recyclerview-v7:$parent.ext.libs.supportVersion"
+    compile "com.android.support:appcompat-v7:$parent.ext.libs.supportVersion"
+    compile "com.android.support:design:$parent.ext.libs.supportVersion"
+
+    // fresco
+    compile 'com.facebook.fresco:fresco:0.8.1'
+
+    // butterknife
+    compile 'com.jakewharton:butterknife:8.0.1'
+    kapt 'com.jakewharton:butterknife-compiler:8.0.1'
+
+    // databinder
+    kapt 'com.android.databinding:compiler:2.1.2'
+
+    // rxjava
+    compile 'io.reactivex:rxjava:1.1.5'
+    compile 'io.reactivex:rxandroid:0.23.0'
+
+    // rxlifecycle
+    compile 'com.trello:rxlifecycle:0.6.1'
+    compile 'com.trello:rxlifecycle-components:0.6.1'
+
+    // kotlin
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    // retrofit
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+    compile 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
+
+    // baidu
+    compile files('libs/baidu-music-sdk-v3.2.3.jar')
+    compile files('libs/galaxy.jar')
+}
+repositories {
+    mavenCentral()
+}

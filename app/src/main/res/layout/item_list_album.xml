@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:binding="http://schemas.android.com/apk/res-auto" >
+
+    <data>
+        <variable
+            name="item"
+            type="com.baidu.music.model.Album" />
+        
+        <import type="android.text.TextUtils" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:layout_height="256dp"
+            tools:layout_width="180dp"
+            android:layout_margin="8dp"
+            card_view:cardElevation="4dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    binding:image_url="@{TextUtils.isEmpty(item.mPic1000) ? item.mPicBig : item.mPic1000}" />
+
+                <TextView
+                    android:layout_marginTop="8dp"
+                    android:text="@{item.mTitle}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/black"
+                    android:layout_margin="8dp"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:text="@{item.mDescription}"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:textSize="12sp"
+                    android:maxLines="5"
+                    android:singleLine="false"
+                    android:ellipsize="end"
+                    android:textColor="@android:color/darker_gray"/>
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </FrameLayout>
+</layout>
