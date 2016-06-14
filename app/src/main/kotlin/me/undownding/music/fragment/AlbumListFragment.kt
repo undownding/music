@@ -16,7 +16,7 @@ import me.undownding.music.presenter.BasePresenter
 /**
  * Created by undownding on 16-6-11.
  */
-class AlbumListFragment: BaseSwipeableFragment<Album>() {
+class AlbumListFragment: BaseFragment<Album>() {
 
     private val layoutId = R.layout.item_list_album
     private val brId = BR.item

@@ -12,7 +12,7 @@ import java.util.*
 /**
  * Created by undownding on 16-6-12.
  */
-abstract class BaseSwipeableFragment<T>: RxFragment() {
+abstract class BaseFragment<T>: RxFragment() {
     var list = ArrayList<T>()
     val adapter by lazy { onCreateAdapter() }
 

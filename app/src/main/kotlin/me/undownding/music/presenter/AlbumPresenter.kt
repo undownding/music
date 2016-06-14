@@ -1,5 +1,9 @@
 package me.undownding.music.presenter
 
+import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.StaggeredGridLayoutManager
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import com.baidu.music.model.Album
@@ -25,13 +29,16 @@ class AlbumPresenter(fragment: AlbumFragment): BasePresenter<Music>() {
     }
 
     override fun bind(view: View): View {
+        super.bind(view)
+        fragment.recyclerView.adapter = fragment.adapter
+        fragment.recyclerView.layoutManager = LinearLayoutManager(view.context)
         return super.bind(view)
     }
 
     override fun requestData() {
         val id = fragment.arguments.getLong(AlbumFragment.ALBUM_ID, 0)
         val player = StreamPlayer(MusicApplication.instance)
-        AlbumModel.requestAlbumById(id)
+        AlbumModel.requestAlbumById(id, true)
                 .map { it ->
 //                    val searchResult = DoubanModel.search(query = it.mTitle, size = 1).toBlocking().single()
 //                    if (searchResult?.musics?.size ?: 0 > 0) {
@@ -39,15 +46,20 @@ class AlbumPresenter(fragment: AlbumFragment): BasePresenter<Music>() {
 //                    }
                     it
                 }
-                .map {
-                    it
-                }
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-                    player.prepare(it.items[0])
-                    player.setOnPreparedListener {
-                        player.start()
+//                    player.prepare(it.items[0])
+//                    player.setOnPreparedListener {
+//                        player.start()
+//                    }
+                    if (fragment.activity != null) {
+                        fragment.list.addAll(it.items)
+                        fragment.adapter.data = it.items
+                        fragment.adapter.notifyDataSetChanged()
+                        (fragment.activity as AppCompatActivity).setSupportActionBar(fragment.toolbar)
+                        fragment.dispalyToolbarImage(if (TextUtils.isEmpty(it.mPic1000)) it.mPicBig else it.mPic1000)
+                        fragment.activity.title = it.mTitle
                     }
                 }
     }
@@ -55,4 +67,6 @@ class AlbumPresenter(fragment: AlbumFragment): BasePresenter<Music>() {
     override fun onItemClick(item: Music) {
 
     }
+
+
 }

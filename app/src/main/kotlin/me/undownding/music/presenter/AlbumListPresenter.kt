@@ -23,7 +23,7 @@ class AlbumListPresenter(fragment: AlbumListFragment): BasePresenter<Album>() {
         AlbumModel.requestAlbums()
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe{result ->
+                .subscribe{ result ->
                     fragment.list.addAll(result)
                     fragment.adapter.data = result
                     fragment.adapter.notifyDataSetChanged()
@@ -46,7 +46,9 @@ class AlbumListPresenter(fragment: AlbumListFragment): BasePresenter<Album>() {
     override fun onItemClick(item: Album) {
         fragment.activity.supportFragmentManager
                 .beginTransaction()
-                .replace(R.id.container, AlbumFragment.newInstance(item.mAlbumId.toLong()))
+                .hide(fragment)
+                .add(R.id.container, AlbumFragment.newInstance(item.mAlbumId.toLong()))
+                .addToBackStack(fragment.javaClass.simpleName)
                 .commit()
     }
 }

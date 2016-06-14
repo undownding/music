@@ -12,49 +12,44 @@
         <import type="android.text.TextUtils" />
     </data>
 
-    <FrameLayout
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <android.support.v7.widget.CardView
+        android:layout_height="wrap_content"
+        tools:layout_height="256dp"
+        tools:layout_width="180dp"
+        android:layout_margin="8dp"
+        android:foreground="?attr/selectableItemBackground"
+        card_view:cardElevation="4dp">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout_height="256dp"
-            tools:layout_width="180dp"
-            android:layout_margin="8dp"
-            card_view:cardElevation="4dp">
-            <LinearLayout
+            android:orientation="vertical">
+
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                binding:image_url="@{TextUtils.isEmpty(item.mPic1000) ? item.mPicBig : item.mPic1000}" />
 
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    binding:image_url="@{TextUtils.isEmpty(item.mPic1000) ? item.mPicBig : item.mPic1000}" />
+            <TextView
+                android:layout_marginTop="8dp"
+                android:text="@{item.mTitle}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:layout_margin="8dp"
+                android:textSize="16sp" />
 
-                <TextView
-                    android:layout_marginTop="8dp"
-                    android:text="@{item.mTitle}"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
-                    android:layout_margin="8dp"
-                    android:textSize="16sp" />
+            <TextView
+                android:text="@{item.mDescription}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:textSize="12sp"
+                android:maxLines="5"
+                android:singleLine="false"
+                android:ellipsize="end"
+                android:textColor="@android:color/darker_gray"/>
+        </LinearLayout>
 
-                <TextView
-                    android:text="@{item.mDescription}"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:textSize="12sp"
-                    android:maxLines="5"
-                    android:singleLine="false"
-                    android:ellipsize="end"
-                    android:textColor="@android:color/darker_gray"/>
-            </LinearLayout>
-
-        </android.support.v7.widget.CardView>
-
-    </FrameLayout>
+    </android.support.v7.widget.CardView>
 </layout>

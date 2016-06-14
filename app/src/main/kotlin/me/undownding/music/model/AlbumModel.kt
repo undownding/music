@@ -46,7 +46,7 @@ class AlbumModel {
                     .toList()
         }
 
-        fun requestAlbumById(id: Long): Observable<com.baidu.music.model.Album> {
+        fun requestAlbumById(id: Long, withSongList: Boolean = false): Observable<com.baidu.music.model.Album> {
             val task = Observable.create<com.baidu.music.model.Album> {
                 it.onNext(
                         OnlineManagerEngine.getInstance(MusicApplication.instance)
@@ -55,7 +55,7 @@ class AlbumModel {
                 it.onCompleted()
             }
 
-            return Observable.zip(task, requestMusics(id)) { album, musics ->
+            val zipTask = Observable.zip(task, requestMusics(id)) { album, musics ->
                 if (album.items == null) {
                     album.items = ArrayList()
                 }
@@ -66,11 +66,14 @@ class AlbumModel {
                         music.mArtist = song.author
                         music.mAlbumTitle = song.album_title
                         music.mTitle = song.title
+                        music.mAlbumNo = song.album_no
                         album.items.add(music)
                     }
                 }
                 album
             }
+
+            return if (withSongList) zipTask else task
         }
 
         fun requestMusics(id: Long): Observable<Album> {

@@ -1,32 +1,47 @@
 package me.undownding.music.fragment
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
 import butterknife.BindView
+import com.android.volley.toolbox.ImageRequest
+import com.android.volley.toolbox.Volley
 import com.baidu.music.model.Album
 import com.baidu.music.model.Music
 import com.trello.rxlifecycle.components.support.RxFragment
 import me.undownding.binding.BindingAdapter
 import me.undownding.music.BR
+import me.undownding.music.MusicApplication
 import me.undownding.music.R
 import me.undownding.music.presenter.AlbumPresenter
 import me.undownding.music.presenter.BasePresenter
+import rx.Observable
+import rx.Subscriber
+import rx.android.schedulers.AndroidSchedulers
+import rx.schedulers.Schedulers
 
 /**
  * Created by undownding on 16-6-12.
  */
-class AlbumFragment: BaseSwipeableFragment<Music>() {
+class AlbumFragment: BaseFragment<Music>() {
 
-    private val layoutId = R.layout.item_list_album
+    private val layoutId = R.layout.item_list_music
     private val brId = BR.item
-
-    // @BindView(R.id.swipe_container)
-    // lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     @BindView(android.R.id.list)
     lateinit var recyclerView: RecyclerView
+
+    @BindView(R.id.toolbar)
+    lateinit var toolbar: Toolbar
+
+    @BindView(R.id.toolbar_bg)
+    lateinit var ivToolbar: ImageView
 
     val presenter by lazy { AlbumPresenter(this) }
 
@@ -42,6 +57,10 @@ class AlbumFragment: BaseSwipeableFragment<Music>() {
         }
     }
 
+    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return presenter.bind(inflater?.inflate(R.layout.fragment_album, container, false)!!)
+    }
+
     override fun getPresenter(): BasePresenter<Music> {
         return presenter
     }
@@ -52,5 +71,23 @@ class AlbumFragment: BaseSwipeableFragment<Music>() {
                 presenter.onItemClick(item!!)
             }
         }
+    }
+
+    fun dispalyToolbarImage(url: String) {
+        Observable.create<Bitmap> { subscriber ->
+            Volley.newRequestQueue(MusicApplication.instance)
+                    .add(ImageRequest(url, {
+                        subscriber.onNext(it)
+                        subscriber.onCompleted()
+                    }, 0, 0, ImageView.ScaleType.CENTER_INSIDE, Bitmap.Config.RGB_565, {
+                        subscriber.onCompleted()
+                    }))
+        }
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    ivToolbar.setImageBitmap(it)
+                    ivToolbar.visibility = View.VISIBLE
+                }
     }
 }
