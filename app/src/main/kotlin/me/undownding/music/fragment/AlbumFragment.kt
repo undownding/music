@@ -1,6 +1,7 @@
 package me.undownding.music.fragment
 
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.widget.RecyclerView
@@ -21,6 +22,7 @@ import me.undownding.music.BR
 import me.undownding.music.MusicApplication
 import me.undownding.music.R
 import me.undownding.music.databinding.ItemListMusicBinding
+import me.undownding.music.ext.FrescoExt
 import me.undownding.music.presenter.AlbumPresenter
 import me.undownding.music.presenter.BasePresenter
 import rx.Observable
@@ -86,13 +88,19 @@ class AlbumFragment: BaseFragment<Music>() {
 
     fun dispalyToolbarImage(url: String) {
         Observable.create<Bitmap> { subscriber ->
-            Volley.newRequestQueue(MusicApplication.instance)
-                    .add(ImageRequest(url, {
-                        subscriber.onNext(it)
-                        subscriber.onCompleted()
-                    }, 0, 0, ImageView.ScaleType.CENTER_INSIDE, Bitmap.Config.RGB_565, {
-                        subscriber.onCompleted()
-                    }))
+            val uri = Uri.parse(url)
+            if (FrescoExt.isDownloaded(uri)) {
+                subscriber.onNext(FrescoExt.getOfflineImage(uri))
+                subscriber.onCompleted()
+            } else {
+                Volley.newRequestQueue(MusicApplication.instance)
+                        .add(ImageRequest(url, {
+                            subscriber.onNext(it)
+                            subscriber.onCompleted()
+                        }, 0, 0, ImageView.ScaleType.CENTER_INSIDE, Bitmap.Config.RGB_565, {
+                            subscriber.onCompleted()
+                        }))
+            }
         }
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
