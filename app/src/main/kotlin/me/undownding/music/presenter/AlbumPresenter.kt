@@ -34,6 +34,7 @@ class AlbumPresenter(fragment: AlbumFragment): BasePresenter<Music>() {
         super.bind(view)
         fragment.recyclerView.adapter = fragment.adapter
         fragment.recyclerView.layoutManager = LinearLayoutManager(view.context)
+        fragment.fab.setOnClickListener {  }
         return super.bind(view)
     }
 
