@@ -6,6 +6,7 @@ import android.view.View
 import com.baidu.music.model.Album
 import com.trello.rxlifecycle.components.support.RxFragment
 import me.undownding.music.R
+import me.undownding.music.ext.DataBaseExt
 import me.undownding.music.fragment.AlbumFragment
 import me.undownding.music.fragment.AlbumListFragment
 import me.undownding.music.model.AlbumModel
@@ -27,6 +28,7 @@ class AlbumListPresenter(fragment: AlbumListFragment): BasePresenter<Album>() {
                     fragment.list.addAll(result)
                     fragment.adapter.data = result
                     fragment.adapter.notifyDataSetChanged()
+                    DataBaseExt.db.close()
                 }
     }
 

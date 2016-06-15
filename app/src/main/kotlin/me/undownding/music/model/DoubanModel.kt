@@ -1,5 +1,6 @@
 package me.undownding.music.model
 
+import me.undownding.music.ext.DataBaseExt
 import me.undownding.music.ext.RetrofitFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -17,7 +18,16 @@ class DoubanModel {
 
         fun search(@Query("q") query: String = "", @Query("tag") tag: String = "",
                    @Query("start") offset: Int = 0,@Query("count") size: Int = 20): Observable<DoubanSearchResult> {
-            return api.search(query, tag, offset, size)
+            val key = "douban:$query"
+            if (DataBaseExt.db.exists(key)) {
+                return Observable.just(DataBaseExt.db.getObject(key, DoubanSearchResult::class.java))
+            } else {
+                return api.search(query, tag, offset, size)
+                        .map{
+                            DataBaseExt.db.put(key, it)
+                            it
+                        }
+            }
         }
 
     }

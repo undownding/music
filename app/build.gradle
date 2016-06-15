@@ -80,6 +80,10 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.0.2'
 
+    // SnappyDB
+    compile 'com.snappydb:snappydb-lib:0.5.2'
+    compile 'com.esotericsoftware.kryo:kryo:2.24.0'
+
     // baidu
     compile files('libs/baidu-music-sdk-v3.2.3.jar')
     compile files('libs/galaxy.jar')

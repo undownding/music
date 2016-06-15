@@ -6,6 +6,7 @@ import com.baidu.music.model.Music
 import com.baidu.music.onlinedata.OnlineManagerEngine
 import com.baidu.music.onlinedata.PlayinglistManager
 import me.undownding.music.MusicApplication
+import me.undownding.music.ext.DataBaseExt
 import me.undownding.music.ext.RetrofitFactory
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -28,25 +29,42 @@ class AlbumModel {
         )
 
         fun requestAlbums(): Observable<List<com.baidu.music.model.Album>> {
-            return Observable.from(ALBUM_IDS)
-                    .flatMap {
-                        requestAlbumById(it)
-                    }
-                    .subscribeOn(Schedulers.newThread())
-                    .flatMap { result ->
-                        Observable.create<com.baidu.music.model.Album> {
-//                            val search = DoubanModel.search(query = result.mTitle, size = 1).toBlocking().single()
-//                            if (search.musics?.size ?: 0 > 0) {
-//                                result.mPicBig = search.musics?.get(0)?.image?.replace("/spic", "/lpic")
-//                            }
-                            it.onNext(result)
-                            it.onCompleted()
+            if (DataBaseExt.db.exists("all_albums")) {
+                val result = ArrayList<com.baidu.music.model.Album>()
+                result.addAll(DataBaseExt.db.getObjectArray("all_albums", com.baidu.music.model.Album::class.java))
+                return Observable.just(result)
+            } else {
+                return Observable.from(ALBUM_IDS)
+                        .flatMap {
+                            requestAlbumById(it)
                         }
-                    }
-                    .toList()
+                        .subscribeOn(Schedulers.newThread())
+                        .flatMap { result ->
+                            Observable.create<com.baidu.music.model.Album> {
+                                val search = DoubanModel.search(query = result.mTitle, size = 1).toBlocking().single()
+                                if (search.musics?.size ?: 0 > 0) {
+                                    result.mPicBig = search.musics?.get(0)?.image?.replace("/spic", "/lpic")
+                                }
+                                it.onNext(result)
+                                it.onCompleted()
+                            }
+                        }
+                        .toList()
+                        .map{
+                            DataBaseExt.db.put("all_albums", it)
+                            it
+                        }
+            }
         }
 
         fun requestAlbumById(id: Long, withSongList: Boolean = false): Observable<com.baidu.music.model.Album> {
+            val key = "album:$id"
+            if (DataBaseExt.db.exists(key)) {
+                return Observable.just(
+                        DataBaseExt.db.get(key, com.baidu.music.model.Album::class.java)
+                )
+            }
+
             val task = Observable.create<com.baidu.music.model.Album> {
                 it.onNext(
                         OnlineManagerEngine.getInstance(MusicApplication.instance)
@@ -70,6 +88,7 @@ class AlbumModel {
                         album.items.add(music)
                     }
                 }
+                DataBaseExt.db.put(key, album)
                 album
             }
 

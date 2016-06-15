@@ -12,8 +12,10 @@ import com.baidu.music.onlinedata.PlayinglistManager
 import com.baidu.music.player.StreamPlayer
 import com.trello.rxlifecycle.components.support.RxFragment
 import me.undownding.music.MusicApplication
+import me.undownding.music.ext.DataBaseExt
 import me.undownding.music.fragment.AlbumFragment
 import me.undownding.music.model.AlbumModel
+import me.undownding.music.model.DoubanModel
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 
@@ -37,22 +39,17 @@ class AlbumPresenter(fragment: AlbumFragment): BasePresenter<Music>() {
 
     override fun requestData() {
         val id = fragment.arguments.getLong(AlbumFragment.ALBUM_ID, 0)
-        val player = StreamPlayer(MusicApplication.instance)
         AlbumModel.requestAlbumById(id, true)
                 .map { it ->
-//                    val searchResult = DoubanModel.search(query = it.mTitle, size = 1).toBlocking().single()
-//                    if (searchResult?.musics?.size ?: 0 > 0) {
-//                        it.mPicBig = searchResult.musics?.get(0)?.image?.replace("/spic", "/lpic")
-//                    }
+                    val searchResult = DoubanModel.search(query = it.mTitle, size = 1).toBlocking().single()
+                    if (searchResult?.musics?.size ?: 0 > 0) {
+                        it.mPicBig = searchResult.musics?.get(0)?.image?.replace("/spic", "/lpic")
+                    }
                     it
                 }
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
-//                    player.prepare(it.items[0])
-//                    player.setOnPreparedListener {
-//                        player.start()
-//                    }
                     if (fragment.activity != null) {
                         fragment.list.addAll(it.items)
                         fragment.adapter.data = it.items
@@ -61,6 +58,7 @@ class AlbumPresenter(fragment: AlbumFragment): BasePresenter<Music>() {
                         fragment.dispalyToolbarImage(if (TextUtils.isEmpty(it.mPic1000)) it.mPicBig else it.mPic1000)
                         fragment.activity.title = it.mTitle
                     }
+                    DataBaseExt.db.close()
                 }
     }
 
