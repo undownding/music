@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import butterknife.BindView
 import com.android.volley.toolbox.ImageRequest
 import com.android.volley.toolbox.Volley
@@ -19,6 +20,7 @@ import me.undownding.binding.BindingAdapter
 import me.undownding.music.BR
 import me.undownding.music.MusicApplication
 import me.undownding.music.R
+import me.undownding.music.databinding.ItemListMusicBinding
 import me.undownding.music.presenter.AlbumPresenter
 import me.undownding.music.presenter.BasePresenter
 import rx.Observable
@@ -69,6 +71,15 @@ class AlbumFragment: BaseFragment<Music>() {
         return object : BindingAdapter<Music>(list, layoutId, brId) {
             override fun onClick(view: View?, item: Music?, position: Int) {
                 presenter.onItemClick(item!!)
+            }
+
+            override fun onBindViewHolder(holder: Holder?, position: Int) {
+                val binding = holder?.binding as ItemListMusicBinding
+                val item = list[position]
+                binding.item = item
+                binding.container.setOnClickListener {
+                    presenter.onItemClick(item)
+                }
             }
         }
     }

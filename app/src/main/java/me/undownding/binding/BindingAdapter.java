@@ -74,8 +74,8 @@ public abstract class BindingAdapter<T> extends RecyclerView.Adapter<BindingAdap
         }
     }
 
-    static class Holder extends RecyclerView.ViewHolder {
-        ViewDataBinding binding;
+    public static class Holder extends RecyclerView.ViewHolder {
+        public ViewDataBinding binding;
 
         public Holder(ViewDataBinding binding) {
             super(binding.getRoot());

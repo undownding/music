@@ -18,7 +18,7 @@
             android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
+            android:fitsSystemWindows="false"
             app:contentScrim="?attr/colorPrimary"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
@@ -68,6 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@drawable/ic_play_arrow_white_24dp"
+        app:elevation="6dp"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end" />
 
