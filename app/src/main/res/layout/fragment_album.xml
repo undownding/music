@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:context="me.undownding.binding.ScrollingActivity">
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -35,6 +34,7 @@
 
             <ImageView
                 android:id="@+id/toolbar_bg"
+                android:paddingTop="48dp"
                 app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

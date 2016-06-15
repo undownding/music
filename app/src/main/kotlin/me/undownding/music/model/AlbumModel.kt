@@ -71,7 +71,14 @@ class AlbumModel {
                                 .getAlbumManager(MusicApplication.instance)
                                 .getLosslessAlbum(id))
                 it.onCompleted()
+            }.map { result ->
+                val search = DoubanModel.search(query = result.mTitle, size = 1).toBlocking().single()
+                if (search.musics?.size ?: 0 > 0) {
+                    result.mPicBig = search.musics?.get(0)?.image?.replace("/spic", "/lpic")
+                }
+                result
             }
+
 
             val zipTask = Observable.zip(task, requestMusics(id)) { album, musics ->
                 if (album.items == null) {

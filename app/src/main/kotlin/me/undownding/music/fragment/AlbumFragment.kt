@@ -97,7 +97,7 @@ class AlbumFragment: BaseFragment<Music>() {
                         .add(ImageRequest(url, {
                             subscriber.onNext(it)
                             subscriber.onCompleted()
-                        }, 0, 0, ImageView.ScaleType.CENTER_INSIDE, Bitmap.Config.RGB_565, {
+                        }, 0, 0, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, {
                             subscriber.onCompleted()
                         }))
             }
