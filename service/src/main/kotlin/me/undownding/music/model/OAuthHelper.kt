@@ -1,6 +1,7 @@
 package me.undownding.music.model
 
 import android.content.Context
+import com.baidu.music.oauth.OAuthHelper
 import rx.Observable
 import rx.schedulers.Schedulers
 

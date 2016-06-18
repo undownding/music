@@ -13,8 +13,8 @@ import com.baidu.music.util.LogUtil;
 
 import java.util.List;
 
-import me.undownding.music.model.OAuthHelper;
 import me.undownding.music.model.AlbumModel;
+import me.undownding.music.model.OAuthHelper;
 
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>

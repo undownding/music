@@ -6,14 +6,10 @@ package me.undownding.music
 import android.os.Bundle
 import android.support.v7.app.AppCompatDelegate
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity
+import me.undownding.music.ext.BaseActivity
 import me.undownding.music.fragment.AlbumListFragment
 
-class MainActivity: RxAppCompatActivity() {
-    companion object {
-        init {
-            AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
-        }
-    }
+class MainActivity: BaseActivity() {
 
     val fragment = AlbumListFragment()
 

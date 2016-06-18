@@ -2,7 +2,9 @@
     package="me.undownding.music.service">
 
     <application android:allowBackup="true">
+        
         <service android:name="me.undownding.music.service.PlayingService" />
+
     </application>
 
 </manifest>
