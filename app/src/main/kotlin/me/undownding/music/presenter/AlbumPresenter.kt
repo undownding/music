@@ -2,16 +2,10 @@ package me.undownding.music.presenter
 
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.StaggeredGridLayoutManager
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
-import com.baidu.music.model.Album
 import com.baidu.music.model.Music
-import com.baidu.music.onlinedata.PlayinglistManager
-import com.baidu.music.player.StreamPlayer
 import com.trello.rxlifecycle.components.support.RxFragment
-import me.undownding.music.MusicApplication
 import me.undownding.music.ext.DataBaseExt
 import me.undownding.music.fragment.AlbumFragment
 import me.undownding.music.model.AlbumModel

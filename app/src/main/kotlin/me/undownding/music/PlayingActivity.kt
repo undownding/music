@@ -15,6 +15,7 @@ class PlayingActivity: RxAppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playing)
+        doBind()
     }
 
     fun doBind() {
