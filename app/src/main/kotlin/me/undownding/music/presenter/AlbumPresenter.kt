@@ -1,12 +1,15 @@
 package me.undownding.music.presenter
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.View
 import com.baidu.music.model.Music
 import com.trello.rxlifecycle.components.support.RxFragment
+import me.undownding.music.PlayingActivity
 import me.undownding.music.ext.DataBaseExt
+import me.undownding.music.ext.toJson
 import me.undownding.music.fragment.AlbumFragment
 import me.undownding.music.model.AlbumModel
 import me.undownding.music.model.DoubanModel
@@ -35,12 +38,17 @@ class AlbumPresenter(fragment: AlbumFragment): BasePresenter<Music>() {
     override fun requestData() {
         val id = fragment.arguments.getLong(AlbumFragment.ALBUM_ID, 0)
         AlbumModel.requestAlbumById(id, true)
-                .map { it ->
-                    val searchResult = DoubanModel.search(query = it.mTitle, size = 1).toBlocking().single()
+                .map { album ->
+                    val searchResult = DoubanModel.search(query = album.mTitle, size = 1).toBlocking().single()
                     if (searchResult?.musics?.size ?: 0 > 0) {
-                        it.mPicBig = searchResult.musics?.get(0)?.image?.replace("/spic", "/lpic")
+                        album.mPicBig = searchResult.musics?.get(0)?.image?.replace("/spic", "/lpic")
                     }
-                    it
+                    album.mItems.forEach {
+                        if (TextUtils.isEmpty(it.mPicBig)) {
+                            it.mPicBig = album.mPicBig
+                        }
+                    }
+                    album
                 }
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -58,7 +66,10 @@ class AlbumPresenter(fragment: AlbumFragment): BasePresenter<Music>() {
     }
 
     override fun onItemClick(item: Music) {
-
+        val intent = Intent(fragment.context, PlayingActivity::class.java)
+        intent.putExtra(PlayingActivity.PLAY_MUSIC, true)
+        intent.putExtra(PlayingActivity.MUSIC_BEAN, item.toJson())
+        fragment.context.startActivity(intent)
     }
 
 

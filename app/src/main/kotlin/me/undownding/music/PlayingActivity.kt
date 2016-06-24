@@ -1,34 +1,32 @@
 package me.undownding.music
 
-import android.content.Intent
-import android.os.Bundle
-import com.trello.rxlifecycle.components.support.RxAppCompatActivity
-import me.undownding.music.service.PlayingService
-import me.undownding.music.service.RxPlayingServiceImpl
-import rx.schedulers.Schedulers
 
+import android.os.Bundle
+import android.widget.ImageView
+import android.widget.TextView
+import com.trello.rxlifecycle.components.support.RxAppCompatActivity
+import me.undownding.music.presenter.PlayingPresenter
 class PlayingActivity: RxAppCompatActivity() {
 
-    var service: PlayingService? = null
-    val rxBinding by lazy { RxPlayingServiceImpl() }
+    companion object {
+        val PLAY_MUSIC = "play_music"
+        val MUSIC_BEAN = "music_bean"
+    }
+
+    val presenter by lazy { PlayingPresenter(this) }
+    val rootView by lazy { findViewById(R.id.root) as ImageView }
+    val picAlbum by lazy { findViewById(R.id.pic_album) as ImageView }
+    val tvTitle by lazy { findViewById(R.id.tv_title) as TextView }
+    val tvArtist by lazy { findViewById(R.id.tv_artist) as TextView }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_playing)
-        doBind()
-    }
-
-    fun doBind() {
-        startService(Intent(this, PlayingService::class.java))
-        rxBinding.bind(this)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe { service = it }
+        presenter.doBind()
     }
 
     override fun onDestroy() {
-        if (service != null) {
-            unbindService(rxBinding.serviceConnection)
-        }
+        presenter.doUnbind()
         super.onDestroy()
     }
 }

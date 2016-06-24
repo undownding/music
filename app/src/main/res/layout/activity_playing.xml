@@ -1,82 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:md="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:background="#7fff0000"
-    tools:context="me.undownding.music.PlayingActivity">
+    android:layout_width="match_parent" >
 
-    <RelativeLayout
+    <ImageView
+        android:id="@+id/root"
+        android:scaleType="centerCrop"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <ImageView
-            android:layout_width="192dp"
-            android:layout_height="192dp"
-            android:layout_centerInParent="true"/>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/current_time"
-            android:paddingLeft="24dp"
-            android:layout_alignParentLeft="true"
-            android:textColor="@android:color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="01:29" />
-
-        <TextView
-            android:id="@+id/total_time"
-            android:paddingRight="24dp"
-            android:layout_alignParentRight="true"
-            android:textColor="@android:color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            tools:text="05:31" />
-
-    </RelativeLayout>
-
-    <com.gc.materialdesign.views.Slider
-        android:id="@+id/slider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        md:showNumberIndicator="false"
-        md:value="30"
-        md:max="50"
-        md:min="0" />
-
+        android:layout_height="match_parent" />
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        tools:background="#7fff0000"
+        tools:context="me.undownding.music.PlayingActivity">
 
-        <ImageView
-            app:srcCompat="@drawable/ic_skip_previous_white_24dp"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-        <ImageView
-            app:srcCompat="@drawable/ic_play_arrow_white_24dp"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"/>
+            <ImageView
+                android:id="@+id/pic_album"
+                android:layout_width="192dp"
+                android:layout_height="192dp"
+                android:layout_centerInParent="true"/>
 
-        <ImageView
-            app:srcCompat="@drawable/ic_skip_next_white_24dp"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_below="@id/pic_album"
+                android:layout_marginTop="16dp"
+                android:textColor="@android:color/white"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Title" />
+
+            <TextView
+                android:id="@+id/tv_artist"
+                android:layout_below="@id/tv_title"
+                android:textColor="@android:color/white"
+                tools:text="Artist"
+                android:layout_marginTop="16dp"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/current_time"
+                android:paddingLeft="24dp"
+                android:layout_alignParentLeft="true"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="01:29" />
+
+            <TextView
+                android:id="@+id/total_time"
+                android:paddingRight="24dp"
+                android:layout_alignParentRight="true"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="05:31" />
+
+        </RelativeLayout>
+
+        <com.gc.materialdesign.views.Slider
+            android:id="@+id/slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            md:showNumberIndicator="false"
+            md:value="30"
+            md:max="50"
+            md:min="0" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:orientation="horizontal">
+
+            <ImageView
+                app:srcCompat="@drawable/ic_skip_previous_white_24dp"
+                android:clickable="true"
+                android:background="?attr/selectableItemBackground"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="24dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"/>
+
+            <ImageView
+                app:srcCompat="@drawable/ic_play_arrow_white_24dp"
+                android:clickable="true"
+                android:background="?attr/selectableItemBackground"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerHorizontal="true"/>
+
+            <ImageView
+                app:srcCompat="@drawable/ic_skip_next_white_24dp"
+                android:clickable="true"
+                android:background="?attr/selectableItemBackground"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="24dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"/>
+        </RelativeLayout>
     </LinearLayout>
-</LinearLayout>
+</FrameLayout>
