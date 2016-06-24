@@ -11,6 +11,7 @@ class PlayingActivity: RxAppCompatActivity() {
 
     companion object {
         val PLAY_MUSIC = "play_music"
+        val PLAY_LIST  = "play_list"
         val MUSIC_BEAN = "music_bean"
     }
 

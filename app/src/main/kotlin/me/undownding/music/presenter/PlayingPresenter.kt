@@ -8,12 +8,16 @@ import android.renderscript.Allocation
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
 import android.widget.ImageView
+import android.widget.Toast
 import com.android.volley.toolbox.ImageRequest
 import com.android.volley.toolbox.Volley
+import com.baidu.music.model.Album
 import com.baidu.music.model.Music
+import com.baidu.music.onlinedata.PlayinglistManager
 import me.undownding.music.MusicApplication
 import me.undownding.music.PlayingActivity
 import me.undownding.music.ext.BitmapUtils
+import me.undownding.music.ext.DataBaseExt
 import me.undownding.music.ext.FrescoExt
 import me.undownding.music.ext.GsonUtils
 import me.undownding.music.service.PlayingService
@@ -121,11 +125,16 @@ class PlayingPresenter(activity: PlayingActivity) {
             activity.slider.min = 0
             activity.slider.max = music.mFileDuration.toInt()
             activity.tvCurrentTime.text = getTime(0)
+        } else {
+            activity.slider.min = 0
+            activity.slider.max = 0
+            activity.tvCurrentTime.text = getTime(0)
         }
     }
 
     fun doUnbind() {
         if (service != null) {
+            service?.player?.setPlaylistListener(null)
             activity.unbindService(rxBinding.serviceConnection)
             loopThread.stop = true
         }
@@ -138,22 +147,98 @@ class PlayingPresenter(activity: PlayingActivity) {
             if (!(service?.player?.mCurrentList?.contains(music)?: false)) {
                 service?.player?.mCurrentList?.add(music)
             }
-            service?.player?.mCurrentList?.add(music)
-            service?.player?.reset()
-            service?.player?.setOnPreparedListener {
-                service?.player?.play(music.mId.toLong())
-                service?.player?.setOnPreparedListener(null)
+            if (service?.player?.musicId != music.mId.toLong()) {
+                service?.player?.reset()
+                service?.player?.setOnPreparedListener {
+                    service?.player?.play(music.mId.toLong())
+                    service?.player?.setOnPreparedListener(null)
+                }
+                service?.player?.prepare(music)
             }
-            service?.player?.prepare(music)
-
 
             intent.putExtra(PlayingActivity.PLAY_MUSIC, false)
-            activity.intent = intent
+        } else if (activity.intent.getBooleanExtra(PlayingActivity.PLAY_LIST, false)) {
+            val album = GsonUtils.instance.fromJson(intent.getStringExtra(PlayingActivity.MUSIC_BEAN), Album::class.java)
+            service?.player?.addPlayList(album.mItems)
+            service?.player?.reset()
+            service?.player?.setOnPreparedListener {
+                service?.player?.start()
+                service?.player?.setOnPreparedListener(null)
+            }
+            service?.player?.prepare(album.items[0])
         } else {
-            // dispaly image from service
+            changePlayerInfo()
+        }
+
+
+        service?.player?.setPlaylistListener(object: PlayinglistManager.OnPlayListListener {
+            override fun onPlayerPrepared() {
+            }
+
+            override fun onPlayStatusChanged() {
+            }
+
+            override fun onPlayError(p0: Int) {
+                Toast.makeText(activity, "Network Error!!", Toast.LENGTH_SHORT).show()
+            }
+
+            override fun onPlayListChanged() {
+            }
+
+            override fun onPlayListEnd() {
+                service?.player?.reset()
+                service?.player?.play(service?.player?.mCurrentList?.get(0)?.mId?.toLong()!!)
+            }
+
+            override fun onPlayInfoChanged() {
+                changePlayerInfo()
+            }
+        })
+        service?.player?.setOnCompletionListener {
+            service?.player?.reset()
+            service?.player?.playNext()
         }
     }
 
+    private fun changePlayerInfo() {
+        activity.runOnUiThread {
+            var music: Music? = null
+            service?.player?.mCurrentList?.forEach {
+                if (it.mId.toLong() == service?.player?.musicId?.toLong()) {
+                    music = it
+                }
+            }
+            if (music != null) {
+                activity.tvTitle.text = music?.mTitle
+                activity.tvArtist.text = music?.mArtist
+                activity.slider.min = 0
+                activity.slider.max = 0
+                activity.tvCurrentTime.text = getTime(0)
+
+                Observable.create<Bitmap> { subscriber ->
+                    val uri = Uri.parse(music?.mPicBig)
+                    if (FrescoExt.isDownloaded(uri)) {
+                        subscriber.onNext(FrescoExt.getOfflineImage(uri))
+                        subscriber.onCompleted()
+                    } else {
+                        Volley.newRequestQueue(MusicApplication.instance)
+                                .add(ImageRequest(music?.mPicBig, {
+                                    subscriber.onNext(it)
+                                    subscriber.onCompleted()
+                                }, 0, 0, ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565, {
+                                    subscriber.onCompleted()
+                                }))
+                    }
+                }
+                        .subscribeOn(Schedulers.newThread())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe {
+                            activity.picAlbum.setImageBitmap(it)
+                            rxBlur(it, activity.rootView)
+                        }
+            }
+        }
+    }
 
     fun changeValue(value: Int) {
         service?.player?.seek(value)

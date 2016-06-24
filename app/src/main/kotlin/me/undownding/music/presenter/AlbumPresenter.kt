@@ -5,10 +5,12 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
 import android.view.View
+import com.baidu.music.model.Album
 import com.baidu.music.model.Music
 import com.trello.rxlifecycle.components.support.RxFragment
 import me.undownding.music.PlayingActivity
 import me.undownding.music.ext.DataBaseExt
+import me.undownding.music.ext.GsonUtils
 import me.undownding.music.ext.toJson
 import me.undownding.music.fragment.AlbumFragment
 import me.undownding.music.model.AlbumModel
@@ -22,6 +24,7 @@ import rx.schedulers.Schedulers
 class AlbumPresenter(fragment: AlbumFragment): BasePresenter<Music>() {
 
     val fragment = fragment
+    var album: Album? = null
 
     override fun getFragment(): RxFragment {
         return fragment
@@ -31,7 +34,14 @@ class AlbumPresenter(fragment: AlbumFragment): BasePresenter<Music>() {
         super.bind(view)
         fragment.recyclerView.adapter = fragment.adapter
         fragment.recyclerView.layoutManager = LinearLayoutManager(view.context)
-        fragment.fab.setOnClickListener {  }
+        fragment.fab.setOnClickListener {
+            if (album != null) {
+                val intent = Intent(fragment.context, PlayingActivity::class.java)
+                intent.putExtra(PlayingActivity.PLAY_LIST, true)
+                intent.putExtra(PlayingActivity.MUSIC_BEAN, GsonUtils.instance.toJson(album))
+                fragment.context.startActivity(intent)
+            }
+        }
         return super.bind(view)
     }
 
@@ -53,6 +63,7 @@ class AlbumPresenter(fragment: AlbumFragment): BasePresenter<Music>() {
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe {
+                    this.album = it
                     if (fragment.activity != null) {
                         fragment.list.addAll(it.items)
                         fragment.adapter.data = it.items
