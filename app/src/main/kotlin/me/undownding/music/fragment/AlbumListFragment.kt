@@ -47,6 +47,7 @@ class AlbumListFragment: BaseFragment<Album>() {
         super.onViewCreated(view, savedInstanceState)
         if (activity != null) {
             (activity as RxAppCompatActivity).setSupportActionBar(toolbar)
+            activity.title = "μ'sic"
         }
     }
 
