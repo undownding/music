@@ -1,7 +1,10 @@
 package me.undownding.music.service
 
 import android.app.Service
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Binder
 import android.os.IBinder
 import com.baidu.music.player.StreamPlayer
@@ -15,9 +18,11 @@ class PlayingService: Service() {
 
     val player by lazy { StreamPlayer.getInstance(MusicApplication.instance) }
     val incomingCallHandler by lazy { IncomingCallHandler(player) }
+    val headsetReceiver by lazy { HeadSetReceiver() }
 
     override fun onCreate() {
         incomingCallHandler.listen()
+        registerReceiver(headsetReceiver, IntentFilter(Intent.ACTION_HEADSET_PLUG))
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -32,7 +37,18 @@ class PlayingService: Service() {
         incomingCallHandler.release()
         player.stop()
         player.release()
+        unregisterReceiver(headsetReceiver)
     }
 
+    inner class HeadSetReceiver: BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val state = intent?.getIntExtra("state", -1)
+            when (state) {
+                0 -> player.pause()
+                1 -> player.start()
+            }
+        }
+
+    }
 
 }
