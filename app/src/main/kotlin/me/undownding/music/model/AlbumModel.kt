@@ -92,6 +92,7 @@ class AlbumModel {
                         music.mAlbumTitle = song.album_title
                         music.mTitle = song.title
                         music.mAlbumNo = song.album_no
+                        music.mFileDuration = song.file_duration
                         album.items.add(music)
                     }
                 }

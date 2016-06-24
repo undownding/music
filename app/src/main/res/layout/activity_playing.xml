@@ -32,7 +32,9 @@
             <TextView
                 android:id="@+id/tv_title"
                 android:layout_below="@id/pic_album"
-                android:layout_marginTop="16dp"
+                android:layout_margin="32dp"
+                android:layout_marginTop="72dp"
+                android:singleLine="true"
                 android:textColor="@android:color/white"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_centerHorizontal="true"
@@ -45,7 +47,6 @@
                 android:layout_below="@id/tv_title"
                 android:textColor="@android:color/white"
                 tools:text="Artist"
-                android:layout_marginTop="16dp"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:layout_centerHorizontal="true"
                 android:layout_width="wrap_content"
@@ -65,7 +66,7 @@
                 android:textColor="@android:color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="01:29" />
+                tools:text="00:00" />
 
             <TextView
                 android:id="@+id/total_time"

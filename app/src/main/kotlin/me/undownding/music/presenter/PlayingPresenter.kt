@@ -21,15 +21,29 @@ import me.undownding.music.service.RxPlayingServiceImpl
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 /**
  * Created by undownding on 16-6-24.
  */
 class PlayingPresenter(activity: PlayingActivity) {
 
+    companion object {
+        val LOOP_TIME: Long = 1000
+
+        fun getTime(ms: Long): String {
+            return String.format("%02d:%02d",
+                    TimeUnit.MILLISECONDS.toMinutes(ms),
+                    TimeUnit.MILLISECONDS.toSeconds(ms) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(ms))
+            )
+        }
+    }
+
     val activity = activity
     val rxBinding by lazy { RxPlayingServiceImpl() }
     var service: PlayingService? = null
+    val loopThread by lazy { LoopThread(activity) }
 
     fun rxBlur(bkg: Bitmap, view: ImageView) {
         Observable.create<BitmapDrawable> {
@@ -73,6 +87,7 @@ class PlayingPresenter(activity: PlayingActivity) {
                 .subscribeOn(Schedulers.newThread())
                 .subscribe {
                     service = it
+                    loopThread.start()
                     handleIntent(activity.intent)
                 }
 
@@ -103,12 +118,16 @@ class PlayingPresenter(activity: PlayingActivity) {
                     }
             activity.tvTitle.text = music.mTitle
             activity.tvArtist.text = music.mArtist
+            activity.slider.min = 0
+            activity.slider.max = music.mFileDuration.toInt()
+            activity.tvCurrentTime.text = getTime(0)
         }
     }
 
     fun doUnbind() {
         if (service != null) {
             activity.unbindService(rxBinding.serviceConnection)
+            loopThread.stop = true
         }
     }
 
@@ -135,4 +154,27 @@ class PlayingPresenter(activity: PlayingActivity) {
         }
     }
 
+
+    fun changeValue(value: Int) {
+        service?.player?.seek(value)
+    }
+
+    class LoopThread(activity: PlayingActivity): Thread() {
+        var stop = false
+        val activity = activity
+
+        override fun run() {
+            while (!stop) {
+                activity.runOnUiThread{
+                    activity.slider.value = activity.presenter.service?.player?.position() ?: 0
+                    activity.tvCurrentTime.text = getTime(activity.slider.value.toLong())
+                    if (activity.slider.max == 0) {
+                        activity.slider.max = activity.presenter.service?.player?.duration() ?: 0
+                        activity.tvTotalTime.text = getTime(activity.slider.max.toLong())
+                    }
+                }
+                sleep(LOOP_TIME)
+            }
+        }
+    }
 }
