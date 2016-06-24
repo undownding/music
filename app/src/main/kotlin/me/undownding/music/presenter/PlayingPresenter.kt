@@ -16,6 +16,7 @@ import com.baidu.music.model.Music
 import com.baidu.music.onlinedata.PlayinglistManager
 import me.undownding.music.MusicApplication
 import me.undownding.music.PlayingActivity
+import me.undownding.music.R
 import me.undownding.music.ext.BitmapUtils
 import me.undownding.music.ext.DataBaseExt
 import me.undownding.music.ext.FrescoExt
@@ -176,6 +177,11 @@ class PlayingPresenter(activity: PlayingActivity) {
             }
 
             override fun onPlayStatusChanged() {
+                if (service?.player?.isPlaying!!) {
+                    activity.btnPlay.setImageResource(R.drawable.ic_pause_white_24dp)
+                } else {
+                    activity.btnPlay.setImageResource(R.drawable.ic_play_arrow_white_24dp)
+                }
             }
 
             override fun onPlayError(p0: Int) {
@@ -244,6 +250,25 @@ class PlayingPresenter(activity: PlayingActivity) {
         service?.player?.seek(value)
     }
 
+    fun play() {
+        if (service?.player?.isPlaying ?: true) {
+            service?.player?.pause()
+        } else {
+            service?.player?.start()
+        }
+    }
+
+    fun previous() {
+        service?.player?.reset()
+        service?.player?.setOnPreparedListener { service?.player?.start() }
+        service?.player?.playPrevious()
+    }
+
+    fun next() {
+        service?.player?.reset()
+        service?.player?.setOnPreparedListener { service?.player?.start() }
+        service?.player?.playNext()
+    }
     class LoopThread(activity: PlayingActivity): Thread() {
         var stop = false
         val activity = activity
