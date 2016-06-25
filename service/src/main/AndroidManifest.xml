@@ -4,8 +4,7 @@
     <application android:name="me.undownding.music.MusicApplication"
         android:allowBackup="true">
         
-        <service android:name="me.undownding.music.service.PlayingService"
-            android:process=":playing"/>
+        <service android:name="me.undownding.music.service.PlayingService" />
 
     </application>
 
