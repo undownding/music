@@ -118,7 +118,7 @@ class PlayingPresenter(activity: PlayingActivity) {
                     .subscribeOn(Schedulers.newThread())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
-                        activity.picAlbum.setImageBitmap(it)
+                        activity.picAlbum.setImageURI(Uri.parse((music.mPicBig)), null)
                         rxBlur(it, activity.rootView)
                     }
             activity.tvTitle.text = music.mTitle

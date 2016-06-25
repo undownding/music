@@ -23,7 +23,7 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <ImageView
+            <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/pic_album"
                 android:layout_width="192dp"
                 android:layout_height="192dp"

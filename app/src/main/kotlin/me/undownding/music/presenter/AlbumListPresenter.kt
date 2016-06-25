@@ -36,7 +36,7 @@ class AlbumListPresenter(fragment: AlbumListFragment): BasePresenter<Album>() {
         super.bind(view)
         fragment.recyclerView.adapter = fragment.adapter
         fragment.recyclerView.layoutManager = StaggeredGridLayoutManager(
-                2, StaggeredGridLayoutManager.VERTICAL
+                fragment.context.resources.getInteger(R.integer.colum_count), StaggeredGridLayoutManager.VERTICAL
         )
         return view
     }

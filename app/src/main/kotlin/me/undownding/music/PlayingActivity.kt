@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewConfiguration
 import android.widget.ImageView
 import android.widget.TextView
+import com.facebook.drawee.view.SimpleDraweeView
 import com.gc.materialdesign.views.Slider
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity
 import me.undownding.music.presenter.PlayingPresenter
@@ -24,7 +25,7 @@ class PlayingActivity: RxAppCompatActivity() {
 
     val presenter by lazy { PlayingPresenter(this) }
     val rootView by lazy { findViewById(R.id.root) as ImageView }
-    val picAlbum by lazy { findViewById(R.id.pic_album) as ImageView }
+    val picAlbum by lazy { findViewById(R.id.pic_album) as SimpleDraweeView }
     val tvTitle by lazy { findViewById(R.id.tv_title) as TextView }
     val tvArtist by lazy { findViewById(R.id.tv_artist) as TextView }
     val slider by lazy { findViewById(R.id.slider) as Slider }
