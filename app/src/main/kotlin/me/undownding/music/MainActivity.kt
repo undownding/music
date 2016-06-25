@@ -8,10 +8,11 @@ import android.support.v7.app.AppCompatDelegate
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity
 import me.undownding.music.ext.BaseActivity
 import me.undownding.music.fragment.AlbumListFragment
+import me.undownding.music.fragment.LoadingFragment
 
 class MainActivity: BaseActivity() {
 
-    val fragment = AlbumListFragment()
+    val fragment = LoadingFragment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
