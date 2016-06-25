@@ -61,8 +61,8 @@
 
             <TextView
                 android:id="@+id/current_time"
-                android:paddingLeft="24dp"
-                android:layout_alignParentLeft="true"
+                android:paddingStart="24dp"
+                android:layout_alignParentStart="true"
                 android:textColor="@android:color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -70,8 +70,8 @@
 
             <TextView
                 android:id="@+id/total_time"
-                android:paddingRight="24dp"
-                android:layout_alignParentRight="true"
+                android:paddingEnd="24dp"
+                android:layout_alignParentEnd="true"
                 android:textColor="@android:color/white"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -123,5 +123,9 @@
                 android:layout_width="48dp"
                 android:layout_height="48dp"/>
         </RelativeLayout>
+        <View
+            android:id="@+id/view_offset"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
     </LinearLayout>
 </FrameLayout>

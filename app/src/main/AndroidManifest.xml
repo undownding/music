@@ -27,7 +27,7 @@
         </activity>
         <activity android:name=".PlayingActivity"
             android:launchMode="singleInstance"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.Playing"/>
     </application>
 
 </manifest>
